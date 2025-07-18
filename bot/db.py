@@ -16,11 +16,19 @@ DB_PARAMS = {
 
 def log_button_event(user_id, button_type):
     conn = psycopg2.connect(**DB_PARAMS)
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO button_events (user_id, action_type) VALUES (%s, %s)",
-        (user_id, button_type)
-    )
-    conn.commit()
-    cursor.close()
+    with conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO button_events (user_id, action_type) VALUES (%s, %s)",
+            (user_id, button_type)
+        )
+        conn.commit()
+    conn.close()
+
+
+def apply_migrations():
+    conn = psycopg2.connect(**DB_PARAMS)
+    with conn.cursor() as cur:
+        with open("schema.sql", "r") as f:
+            cur.execute(f.read())
+        conn.commit()
     conn.close()
