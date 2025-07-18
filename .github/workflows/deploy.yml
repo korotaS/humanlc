@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/railwayapp/cli:latest
     steps:
+      - name: Check secrets loaded
+        run:
+          'echo "TOKEN LENGTH: ${#RAILWAY_TOKEN}"'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       - name: Deploy
         run: railway up
         env:
