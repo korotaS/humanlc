@@ -28,7 +28,7 @@ def log_button_event(user_id, button_type):
 def apply_migrations():
     conn = psycopg2.connect(**DB_PARAMS)
     with conn.cursor() as cur:
-        with open("schema.sql", "r") as f:
+        with open("migrations/001_init.sql", "r") as f:
             cur.execute(f.read())
         conn.commit()
     conn.close()

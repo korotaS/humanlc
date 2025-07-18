@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-from bot.db import log_button_event
+from bot.db import log_button_event, apply_migrations
 from bot.buttons import main_keyboard, BUTTON_TEXTS_SET
 
 load_dotenv()
@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 # /start handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    apply_migrations()
     await update.message.reply_text("Choose an option:", reply_markup=main_keyboard)
 
 
