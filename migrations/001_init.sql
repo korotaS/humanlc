@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS button_events;
+-- DROP TABLE IF EXISTS button_events;
 
 CREATE TABLE button_events (
     id SERIAL PRIMARY KEY,
