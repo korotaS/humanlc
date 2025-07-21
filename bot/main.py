@@ -7,7 +7,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
 from bot.buttons import main_keyboard, BUTTON_TEXTS_SET
-from bot.db import log_button_event, apply_migrations, get_today_stats, get_avg_day_stats
+from bot.db import log_button_event, apply_migrations, get_today_stats, get_avg_day_stats, deprecate_1_and_2
 
 load_dotenv()
 
@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 # /start handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     apply_migrations()
+    deprecate_1_and_2()
     await update.message.reply_text("Choose an option:", reply_markup=main_keyboard)
 
 

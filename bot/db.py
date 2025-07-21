@@ -84,3 +84,28 @@ def apply_migrations():
             with open("migrations/001_init.sql", "r") as f:
                 cur.execute(f.read())
             conn.commit()
+
+
+def deprecate_1_and_2():
+    with psycopg2.connect(**DB_PARAMS) as conn:
+        conn.autocommit = False
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO button_events (user_id, action_type, pressed_at)
+                SELECT user_id, '#1', pressed_at
+                FROM button_events
+                WHERE action_type = '#1 & #2';
+            """)
+
+            cur.execute("""
+                INSERT INTO button_events (user_id, action_type, pressed_at)
+                SELECT user_id, '#2', pressed_at
+                FROM button_events
+                WHERE action_type = '#1 & #2';
+            """)
+
+            cur.execute("""
+                DELETE FROM button_events
+                WHERE action_type = '#1 & #2';
+            """)
+        conn.commit()
