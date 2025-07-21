@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-from bot.db import log_button_event, apply_migrations, get_today_stats
 from bot.buttons import main_keyboard, BUTTON_TEXTS_SET
+from bot.db import log_button_event, apply_migrations, get_today_stats, get_avg_day_stats
 
 load_dotenv()
 
@@ -46,6 +46,12 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await update.message.reply_text(text)
 
 
+async def avg_stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id = update.effective_user.id
+    text = get_avg_day_stats(user_id)
+    await update.message.reply_text(text)
+
+
 # App entry point
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -53,6 +59,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_button_press))
     app.add_handler(CommandHandler("stats", stats_command))
+    app.add_handler(CommandHandler("stats_avg", avg_stats_command))
 
     app.run_polling()
 
