@@ -65,7 +65,7 @@ def get_avg_day_stats(user_id: int) -> str:
 
     with psycopg2.connect(**DB_PARAMS) as conn:
         with conn.cursor() as cur:
-            cur.execute(query, (user_id,))
+            cur.execute(query, (user_id, user_id))
             rows = cur.fetchall()
 
     if not rows:
